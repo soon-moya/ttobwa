@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'config/app_config.dart';
+import 'config/app_theme.dart';
+import 'config/app_router.dart';
+import 'providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,60 +23,142 @@ class TtobwaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConfig.appName,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Color(AppConfig.primaryColor),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
+      child: MaterialApp(
+        title: AppConfig.appName,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(AppConfig.primaryColor),
+          ),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Color(AppConfig.primaryColor),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            centerTitle: true,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(AppConfig.primaryColor),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.spacing24,
+                vertical: AppTheme.spacing12,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppTheme.radius8),
+              ),
+            ),
+          ),
         ),
+        home: const _AuthWrapper(),
+        onGenerateRoute: AppRouter.generateRoute,
+        debugShowCheckedModeBanner: false,
       ),
-      home: const SplashScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-/// 임시 Splash 화면 (나중에 로그인으로 변경)
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+/// 인증 상태에 따라 화면을 결정하는 Wrapper
+class _AuthWrapper extends StatelessWidget {
+  const _AuthWrapper({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 24),
-            const Icon(
-              Icons.calendar_today,
-              size: 64,
-              color: Color(0xFF2563EB),
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, _) {
+        // 로딩 중
+        if (authProvider.isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              '또봐',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+          );
+        }
+
+        // 로그인 상태
+        if (authProvider.isLoggedIn) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('또봐'),
+            ),
+            body: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    size: 64,
+                    color: AppTheme.accent,
+                  ),
+                  SizedBox(height: AppTheme.spacing16),
+                  Text(
+                    '로그인 성공! 🎉',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: AppTheme.spacing16),
+                  Text('이제 타임테이블을 준비 중입니다.'),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'v1.0.0',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 48),
-            const CircularProgressIndicator(),
-            const SizedBox(height: 16),
-            const Text('초기화 중...'),
-          ],
-        ),
-      ),
+          );
+        }
+
+        // 미로그인 상태 (로그인 화면)
+        return const _AuthScreen();
+      },
     );
+  }
+}
+
+/// 인증 화면 (로그인/회원가입)
+class _AuthScreen extends StatefulWidget {
+  const _AuthScreen({Key? key}) : super(key: key);
+
+  @override
+  State<_AuthScreen> createState() => _AuthScreenState();
+}
+
+class _AuthScreenState extends State<_AuthScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // 라우터 이벤트 리스너 (선택사항)
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 현재 경로 확인 (기본값: 로그인)
+    final isSignUp = ModalRoute.of(context)?.settings.name == '/signup';
+
+    return isSignUp ? const SignUpScreenWidget() : const LoginScreenWidget();
+  }
+}
+
+// 로그인 화면 임포트용 위젯
+import 'views/auth/login_screen.dart';
+import 'views/auth/signup_screen.dart';
+
+class LoginScreenWidget extends StatelessWidget {
+  const LoginScreenWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const LoginScreen();
+  }
+}
+
+class SignUpScreenWidget extends StatelessWidget {
+  const SignUpScreenWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const SignUpScreen();
   }
 }
