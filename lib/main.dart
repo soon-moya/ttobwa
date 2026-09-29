@@ -6,6 +6,8 @@ import 'config/app_config.dart';
 import 'config/app_theme.dart';
 import 'config/app_router.dart';
 import 'providers/auth_provider.dart';
+import 'providers/schedule_provider.dart';
+import 'providers/therapist_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +28,8 @@ class TtobwaApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ScheduleProvider()),
+        ChangeNotifierProvider(create: (_) => TherapistProvider()),
       ],
       child: MaterialApp(
         title: AppConfig.appName,
@@ -81,33 +85,7 @@ class _AuthWrapper extends StatelessWidget {
 
         // 로그인 상태
         if (authProvider.isLoggedIn) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('또봐'),
-            ),
-            body: const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    size: 64,
-                    color: AppTheme.accent,
-                  ),
-                  SizedBox(height: AppTheme.spacing16),
-                  Text(
-                    '로그인 성공! 🎉',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: AppTheme.spacing16),
-                  Text('이제 타임테이블을 준비 중입니다.'),
-                ],
-              ),
-            ),
-          );
+          return const HomeScreen();
         }
 
         // 미로그인 상태 (로그인 화면)
@@ -141,7 +119,7 @@ class _AuthScreenState extends State<_AuthScreen> {
   }
 }
 
-// 로그인 화면 임포트용 위젯
+import 'views/home/home_screen.dart';
 import 'views/auth/login_screen.dart';
 import 'views/auth/signup_screen.dart';
 
