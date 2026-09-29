@@ -1,0 +1,60 @@
+workflows:
+  ttobwa-android:
+    name: Ttobwa Android Build
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    
+    environment:
+      android_signing:
+        - ttobwa_key
+      vars:
+        FLUTTER_VERSION: 3.27.0
+        GRADLE_VERSION: 8.8
+        
+    triggering:
+      events:
+        - push
+        - pull_request
+      branch:
+        patterns:
+          - pattern: main
+            include: true
+
+    scripts:
+      - name: Set up environment
+        script: |
+          brew install --cask android-cmdline-tools
+          
+      - name: Install Flutter
+        script: |
+          git clone https://github.com/flutter/flutter.git -b stable ~/flutter || true
+          export PATH="$PATH:$HOME/flutter/bin"
+          flutter doctor
+          
+      - name: Get dependencies
+        script: |
+          export PATH="$PATH:$HOME/flutter/bin"
+          flutter pub get
+          
+      - name: Analyze code
+        script: |
+          export PATH="$PATH:$HOME/flutter/bin"
+          flutter analyze
+          
+      - name: Build APK (Release)
+        script: |
+          export PATH="$PATH:$HOME/flutter/bin"
+          flutter build apk \
+            --release \
+            --dart-define=FLUTTER_WEB_USE_SKIA=true
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
