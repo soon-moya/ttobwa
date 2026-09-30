@@ -8,6 +8,9 @@ import 'config/app_router.dart';
 import 'providers/auth_provider.dart';
 import 'providers/schedule_provider.dart';
 import 'providers/therapist_provider.dart';
+import 'views/home/home_screen.dart';
+import 'views/auth/login_screen.dart';
+import 'views/auth/signup_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,10 +121,6 @@ class _AuthScreenState extends State<_AuthScreen> {
     return isSignUp ? const SignUpScreenWidget() : const LoginScreenWidget();
   }
 }
-
-import 'views/home/home_screen.dart';
-import 'views/auth/login_screen.dart';
-import 'views/auth/signup_screen.dart';
 
 class LoginScreenWidget extends StatelessWidget {
   const LoginScreenWidget({Key? key}) : super(key: key);

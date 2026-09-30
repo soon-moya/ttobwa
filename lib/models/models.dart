@@ -70,6 +70,9 @@ class Schedule {
   final String? color; // 선생님별 색상
   final DateTime createdAt;
   final DateTime? updatedAt;
+  final String therapyType; // 치료 유형
+  final String childName; // 아이 이름
+  final String therapistName; // 선생님 이름
 
   Schedule({
     required this.id,
@@ -87,6 +90,9 @@ class Schedule {
     this.color,
     required this.createdAt,
     this.updatedAt,
+    required this.therapyType,
+    required this.childName,
+    required this.therapistName,
   });
 
   factory Schedule.fromFirestore(DocumentSnapshot doc) {
@@ -107,6 +113,9 @@ class Schedule {
       color: data['color'],
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
+      therapyType: data['therapyType'] ?? '',
+      childName: data['childName'] ?? '',
+      therapistName: data['therapistName'] ?? '',
     );
   }
 

@@ -6,13 +6,19 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(const LoginScreen());
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        );
       
       case '/login':
-        return MaterialPageRoute(const LoginScreen());
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        );
       
       case '/signup':
-        return MaterialPageRoute(const SignUpScreen());
+        return MaterialPageRoute(
+          builder: (_) => const SignUpScreen(),
+        );
       
       default:
         return MaterialPageRoute(
