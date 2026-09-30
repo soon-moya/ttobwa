@@ -1,14 +1,12 @@
 workflows:
   ttobwa-android-release:
-    name: Ttobwa Android Build
+    name: Ttobwa Android Release Build
     max_build_duration: 120
     instance_type: mac_mini_m2
     
     environment:
-      vars:
-        FLUTTER_VERSION: 3.27.0
-        GRADLE_VERSION: 8.8
-        
+      flutter: 3.27.0
+      
     triggering:
       events:
         - push
@@ -17,26 +15,11 @@ workflows:
           - main
 
     scripts:
-      - name: Install Flutter
-        script: |
-          git clone https://github.com/flutter/flutter.git -b stable $HOME/flutter || true
-          export PATH="$PATH:$HOME/flutter/bin"
-          flutter doctor
-          
       - name: Get dependencies
-        script: |
-          export PATH="$PATH:$HOME/flutter/bin"
-          cd $APPCENTER_SOURCE_DIRECTORY
-          flutter pub get
-          
+        script: flutter pub get
+        
       - name: Build APK (Release)
-        script: |
-          export PATH="$PATH:$HOME/flutter/bin"
-          cd $APPCENTER_SOURCE_DIRECTORY
-          flutter build apk \
-            --release \
-            --dart-define=FLUTTER_WEB_USE_SKIA=true \
-            -v
+        script: flutter build apk --release -v
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
