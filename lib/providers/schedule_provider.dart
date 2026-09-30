@@ -58,11 +58,16 @@ class ScheduleProvider with ChangeNotifier {
         _therapistFilter[id] = true;
       }
 
-      // 이번 달 일정 로드
-      _schedules = await _scheduleService.getSchedulesByMonth(
-        centerId: centerId,
-        month: _currentMonth,
-      );
+      // 테스트 모드: 더미 데이터 생성
+      if (centerId.startsWith('test-')) {
+        _schedules = _generateTestSchedules();
+      } else {
+        // 이번 달 일정 로드
+        _schedules = await _scheduleService.getSchedulesByMonth(
+          centerId: centerId,
+          month: _currentMonth,
+        );
+      }
 
       _applyFilters();
       _isLoading = false;
@@ -72,6 +77,47 @@ class ScheduleProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  /// 테스트 모드: 더미 일정 데이터 생성
+  List<Schedule> _generateTestSchedules() {
+    final now = DateTime.now();
+    final testTherapists = ['therapist-001', 'therapist-002', 'therapist-003'];
+    final testChildren = ['child-001', 'child-002', 'child-003'];
+    final testTherapistNames = ['김선생님', '이선생님', '박선생님'];
+    final testChildNames = ['민준이', '수진이', '준호이'];
+    final therapyTypes = ['언어치료', '인지치료', '감각통합치료'];
+
+    List<Schedule> dummySchedules = [];
+
+    // 이번 달 일정 생성 (5개의 테스트 일정)
+    for (int i = 0; i < 5; i++) {
+      final date = now.add(Duration(days: i * 2));
+      final therapistIndex = i % testTherapists.length;
+      final childIndex = i % testChildren.length;
+
+      dummySchedules.add(
+        Schedule(
+          id: 'test-schedule-$i',
+          centerId: 'test-center-001',
+          therapistId: testTherapists[therapistIndex],
+          childId: testChildren[childIndex],
+          date: date,
+          startTime: '10:${(i * 10) % 60}',
+          endTime: '11:${(i * 10) % 60}',
+          type: 'therapy',
+          subject: therapyTypes[therapistIndex],
+          status: 'scheduled',
+          color: _therapistColors[therapistIndex],
+          createdAt: now,
+          therapyType: therapyTypes[therapistIndex],
+          childName: testChildNames[childIndex],
+          therapistName: testTherapistNames[therapistIndex],
+        ),
+      );
+    }
+
+    return dummySchedules;
   }
 
   /// 선생님별 색상 매핑
