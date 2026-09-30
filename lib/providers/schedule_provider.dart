@@ -87,6 +87,7 @@ class ScheduleProvider with ChangeNotifier {
     final testTherapistNames = ['김선생님', '이선생님', '박선생님'];
     final testChildNames = ['민준이', '수진이', '준호이'];
     final therapyTypes = ['언어치료', '인지치료', '감각통합치료'];
+    final colorHex = ['#2563EB', '#DC2626', '#16A34A']; // 파란색, 빨간색, 초록색
 
     List<Schedule> dummySchedules = [];
 
@@ -108,7 +109,7 @@ class ScheduleProvider with ChangeNotifier {
           type: 'therapy',
           subject: therapyTypes[therapistIndex],
           status: 'scheduled',
-          color: _therapistColors[therapistIndex],
+          color: colorHex[therapistIndex],
           createdAt: now,
           therapyType: therapyTypes[therapistIndex],
           childName: testChildNames[childIndex],
