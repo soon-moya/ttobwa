@@ -13,9 +13,8 @@ workflows:
       events:
         - push
       branch:
-        patterns:
-          - pattern: main
-            include: true
+        include:
+          - main
 
     scripts:
       - name: Install Flutter
