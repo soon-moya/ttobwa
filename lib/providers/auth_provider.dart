@@ -30,6 +30,22 @@ class AuthProvider with ChangeNotifier {
     });
   }
 
+  /// 테스트 모드: 로그인 없이 사용자 설정
+  void setTestUser(User testUser) {
+    _currentUser = testUser;
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+  }
+
+  /// 테스트 모드 종료
+  void clearTestUser() {
+    _currentUser = null;
+    _isLoading = false;
+    _error = null;
+    notifyListeners();
+  }
+
   Future<bool> signUp({
     required String email,
     required String password,
