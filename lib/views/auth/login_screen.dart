@@ -146,8 +146,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       final authProvider = Provider.of<AuthProvider>(context, listen: false);
                       await authProvider.signIn(
-                        _emailController.text,
-                        _passwordController.text,
+                        email: _emailController.text,
+                        password: _passwordController.text,
                       );
                     },
                     style: ElevatedButton.styleFrom(
