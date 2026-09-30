@@ -1,0 +1,22 @@
+# Exclude everything
+*
+!.git
+!.gitignore
+!.nojekyll
+
+# But include web files
+!index.html
+!*.js
+!*.html
+!*.json
+!*.png
+!*.ttf
+!*.otf
+!*.svg
+!*.woff
+!*.woff2
+!*.css
+!favicon.ico
+!assets/
+!canvaskit/
+!icons/
