@@ -61,7 +61,7 @@ class TtobwaApp extends StatelessWidget {
             ),
           ),
         ),
-        home: const _AuthWrapper(),
+        initialRoute: '/',
         onGenerateRoute: AppRouter.generateRoute,
         debugShowCheckedModeBanner: false,
       ),
